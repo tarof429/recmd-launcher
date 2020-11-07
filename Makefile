@@ -14,13 +14,13 @@ recmd-dmn:
 	@mkdir -p $(GOPATH)
 	@cd $(GOPATH); [ -d recmd-dmn ] || git clone $(RECMD_DMN_GIT_REPO)
 	@cd $(GOPATH)/recmd-dmn && git pull
-	@cd $(GOPATH)/recmd-dmn && make clean build test install || exit 1
+	@cd $(GOPATH)/recmd-dmn && make clean build test || exit 1
 
 recmd-cli:
 	@mkdir -p $(GOPATH)
 	@cd $(GOPATH); [ -d recmd-cli ] || git clone $(RECMD_CLI_GIT_REPO)
 	@cd $(GOPATH)/recmd-cli && git pull
-	@cd $(GOPATH)/recmd-cli && make clean build test install || exit 1
+	@cd $(GOPATH)/recmd-cli && make clean build test || exit 1
 
 package:
 	@mkdir -p $(DISTPATH)
