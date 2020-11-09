@@ -6,9 +6,9 @@ RECMD_CLI_GIT_REPO = https://github.com/tarof429/recmd-cli.git
 
 default: all
 
-.PHONY: recmd-dmn recmd-cli clean package
+.PHONY: recmd-dmn recmd-cli clean package repackage
 
-all: recmd-dmn recmd-cli package
+all: recmd-dmn recmd-cli repackage package
 
 recmd-dmn:
 	@mkdir -p $(GOPATH)
@@ -23,14 +23,17 @@ recmd-cli:
 	@cd $(GOPATH)/recmd-cli && make clean build test || exit 1
 
 package:
-	@mkdir -p $(DISTPATH)
 	@mkdir -p $(DISTPATH)/bin
 	@mkdir -p $(DISTPATH)/logs
-	@touch $(DISTPATH)/logs/.ignore
+	@mkdir -p $(DISTPATH)/conf
+	@cp $(GOPATH)/recmd-dmn/recmd-dmn $(DISTPATH)/bin
+	@cp $(GOPATH)/recmd-cli/recmd-cli $(DISTPATH)/bin
 	@cd $(DISTPATH); ln -sf bin/recmd-cli recmd
-	@cp $(GOPATH)/bin/* $(DISTPATH)/bin
-	@cd $(DISTPATH); zip --symlinks -r -D $(BASEPATH)/recmd-launcher.zip .
+	@cd $(DISTPATH); zip --symlinks -r $(BASEPATH)/recmd-launcher.zip .
 
+repackage:
+	go build -o dist/bin/repackage repackage.go 
+	
 clean:
 	@if [ -d build ]; then chmod -R 777 build; fi
 	@rm -rf build dist recmd-launcher.zip
