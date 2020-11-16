@@ -26,6 +26,7 @@ package:
 	@mkdir -p $(DISTPATH)/bin
 	@mkdir -p $(DISTPATH)/logs
 	@mkdir -p $(DISTPATH)/conf
+	@mkdir -p $(DISTPATH)/data
 	@cp $(GOPATH)/recmd-dmn/recmd-dmn $(DISTPATH)/bin
 	@cp $(GOPATH)/recmd-cli/recmd-cli $(DISTPATH)/bin
 	@cd $(DISTPATH); ln -sf bin/recmd-cli recmd

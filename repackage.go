@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -25,6 +28,8 @@ func main() {
 	os.Mkdir(filepath.Join(stageDir, "bin"), os.FileMode(directoryMode))
 	os.Mkdir(filepath.Join(stageDir, "conf"), os.FileMode(directoryMode))
 	os.Mkdir(filepath.Join(stageDir, "logs"), os.FileMode(directoryMode))
+	os.Mkdir(filepath.Join(stageDir, "data"), os.FileMode(directoryMode))
+
 	symlink("bin/recmd-cli", filepath.Join(stageDir, "recmd"))
 	copy(filepath.Join(parentDir, "bin/recmd-dmn"), filepath.Join(stageDir, "bin/recmd-dmn"))
 	chmod(filepath.Join(stageDir, "bin/recmd-dmn"), 0755)
@@ -32,31 +37,19 @@ func main() {
 	copy(filepath.Join(parentDir, "bin/recmd-cli"), filepath.Join(stageDir, "bin/recmd-cli"))
 	copy(filepath.Join(parentDir, "conf/recmd_history.json"), filepath.Join(stageDir, "conf/recmd_history.json"))
 
-	// err = os.Mkdir(stageDir, os.FileMode(directoryMode))
+	// Doesn't work, use workaround
+	//copyAllFiles("../data", stageDir+"/data")
+	cmd := exec.Command("cp", "-r", "data", stageDir)
+	cmd.Dir = parentDir
+	cmd.Wait()
+	combinedOutput, _ := cmd.CombinedOutput()
+	fmt.Println(string(combinedOutput))
 
-	// if err != nil {
-	// 	log.Println("Error, unable to create stage dir")
-	// }
-
-	// err = os.Mkdir(filepath.Join(stageDir, "bin"), os.FileMode(directoryMode))
-
-	// if err != nil {
-	// 	log.Println("Error, unable to create bin dir")
-	// }
-	// err = os.Mkdir(filepath.Join(stageDir, "conf"), os.FileMode(directoryMode))
-
-	// if err != nil {
-	// 	log.Println("Error, unable to create bin dir")
-	// }
-
-	// err = os.Mkdir(filepath.Join(stageDir, "logs"), os.FileMode(directoryMode))
-
-	// if err != nil {
-	// 	log.Println("Error, unable to create bin dir")
-	// }
-
-	// copy(filepath.Join(parentDir, "bin/recmd-dmn"), filepath.Join(stageDir, "bin/recmd-dmn"))
-
+	cmd = exec.Command("zip", "-r", "../recmd.zip", ".")
+	cmd.Dir = stageDir
+	cmd.Wait()
+	combinedOutput, _ = cmd.CombinedOutput()
+	fmt.Println(string(combinedOutput))
 }
 
 func symlink(from, to string) {
@@ -68,27 +61,23 @@ func chmod(file string, perm os.FileMode) {
 }
 
 func copy(from, to string) {
-	// Open original file
 	original, _ := os.Open(from)
-	// if err != nil {
-	// 	log.Println("Unable to open %v\n", from)
-	// }
-
 	defer original.Close()
 
-	// Create new file
 	toFile, _ := os.Create(to)
-
-	// if err != nil {
-	// 	log.Println("Unable to open %v\n", to)
-	// }
 	defer toFile.Close()
 
-	//This will copy
 	io.Copy(toFile, original)
+}
 
-	// if err != nil {
-	// 	log.Println("Unable to copy file")
-	// }
-	//fmt.Printf("Bytes Written: %d\n", bytesWritten)
+func copyAllFiles(from, to string) {
+
+	files, err := ioutil.ReadDir(from)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, f := range files {
+		copy(f.Name(), to+"/"+f.Name())
+	}
 }
