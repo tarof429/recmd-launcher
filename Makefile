@@ -6,9 +6,9 @@ RECMD_CLI_GIT_REPO = https://github.com/tarof429/recmd-cli.git
 
 default: all
 
-.PHONY: recmd-dmn recmd-cli clean package repackage
+.PHONY: recmd-dmn recmd-cli clean package repackage datapack
 
-all: recmd-dmn recmd-cli repackage package
+all: recmd-dmn recmd-cli repackage datapack package
 
 recmd-dmn:
 	@mkdir -p $(GOPATH)
@@ -34,7 +34,10 @@ package:
 
 repackage:
 	go build -o dist/bin/repackage repackage.go 
-	
+
+datapack:
+	go build -o dist/bin/datapack datapack.go 
+
 clean:
 	@if [ -d build ]; then chmod -R 777 build; fi
 	@rm -rf build dist recmd-launcher.zip

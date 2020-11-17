@@ -20,23 +20,15 @@ func main() {
 
 	parentDir := filepath.Dir(wd)
 
-	stageDir := filepath.Join(parentDir, "stage")
+	stageDir := filepath.Join(parentDir, "datapack-stage")
 
 	directoryMode := int(0755)
 
 	os.Mkdir(stageDir, os.FileMode(directoryMode))
-	os.Mkdir(filepath.Join(stageDir, "bin"), os.FileMode(directoryMode))
-	os.Mkdir(filepath.Join(stageDir, "conf"), os.FileMode(directoryMode))
-	os.Mkdir(filepath.Join(stageDir, "logs"), os.FileMode(directoryMode))
-	os.Mkdir(filepath.Join(stageDir, "data"), os.FileMode(directoryMode))
 
-	symlink("bin/recmd-cli", filepath.Join(stageDir, "recmd"))
-	copy(filepath.Join(parentDir, "bin/recmd-dmn"), filepath.Join(stageDir, "bin/recmd-dmn"))
-	chmod(filepath.Join(stageDir, "bin/recmd-dmn"), 0755)
-	copy(filepath.Join(parentDir, "bin/repackage"), filepath.Join(stageDir, "bin/repackage"))
-	chmod(filepath.Join(stageDir, "bin/repackage"), 0755)
-	chmod(filepath.Join(stageDir, "bin/recmd-cli"), 0755)
-	copy(filepath.Join(parentDir, "bin/recmd-cli"), filepath.Join(stageDir, "bin/recmd-cli"))
+	os.Mkdir(filepath.Join(stageDir, "conf"), os.FileMode(directoryMode))
+
+	os.Mkdir(filepath.Join(stageDir, "data"), os.FileMode(directoryMode))
 	copy(filepath.Join(parentDir, "conf/recmd_history.json"), filepath.Join(stageDir, "conf/recmd_history.json"))
 
 	// Doesn't work, use workaround
@@ -47,7 +39,7 @@ func main() {
 	combinedOutput, _ := cmd.CombinedOutput()
 	fmt.Println(string(combinedOutput))
 
-	cmd = exec.Command("zip", "-r", "../recmd.zip", ".")
+	cmd = exec.Command("zip", "-r", "../recmd-datapack.zip", ".")
 	cmd.Dir = stageDir
 	cmd.Wait()
 	combinedOutput, _ = cmd.CombinedOutput()
