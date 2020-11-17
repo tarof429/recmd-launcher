@@ -35,6 +35,8 @@ func main() {
 	chmod(filepath.Join(stageDir, "bin/recmd-dmn"), 0755)
 	copy(filepath.Join(parentDir, "bin/repackage"), filepath.Join(stageDir, "bin/repackage"))
 	chmod(filepath.Join(stageDir, "bin/repackage"), 0755)
+	copy(filepath.Join(parentDir, "bin/datapack"), filepath.Join(stageDir, "bin/datapack"))
+	chmod(filepath.Join(stageDir, "bin/datapack"), 0755)
 	chmod(filepath.Join(stageDir, "bin/recmd-cli"), 0755)
 	copy(filepath.Join(parentDir, "bin/recmd-cli"), filepath.Join(stageDir, "bin/recmd-cli"))
 	copy(filepath.Join(parentDir, "conf/recmd_history.json"), filepath.Join(stageDir, "conf/recmd_history.json"))
